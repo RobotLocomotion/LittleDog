@@ -1,7 +1,7 @@
 function [sol,v,prog,xtraj] = gaitOptimization(gait,seed)
 
   checkDependency('lcmgl');
-  if nargin < 1, gait = 'run_trot'; end
+  if nargin < 1, gait = 'walking_trot'; end
   if nargin < 2, seed = []; end
   if nargin < 3, options = struct(); end
   options = parseOptionsStruct(options); 
@@ -289,42 +289,42 @@ function half_periodic_constraint = halfPeriodicConstraint(robot)
   end
 
   symmetric_matrix = addAntiSymmetricPair(symmetric_matrix,1:2,...
-    robot.getBody(robot.findJointInd('front_left_hip_roll')).dofnum, ...
-    robot.getBody(robot.findJointInd('front_right_hip_roll')).dofnum);
+    robot.getBody(robot.findJointId('front_left_hip_roll')).position_num, ...
+    robot.getBody(robot.findJointId('front_right_hip_roll')).position_num);
 
   symmetric_matrix = addSymmetricPair(symmetric_matrix,3:4, ...
-    robot.getBody(robot.findJointInd('front_left_hip_pitch')).dofnum, ...
-    robot.getBody(robot.findJointInd('front_right_hip_pitch')).dofnum);
+    robot.getBody(robot.findJointId('front_left_hip_pitch')).position_num, ...
+    robot.getBody(robot.findJointId('front_right_hip_pitch')).position_num);
   
   symmetric_matrix = addSymmetricPair(symmetric_matrix,5:6,...
-    robot.getBody(robot.findJointInd('front_left_knee')).dofnum,...
-    robot.getBody(robot.findJointInd('front_right_knee')).dofnum);
+    robot.getBody(robot.findJointId('front_left_knee')).position_num,...
+    robot.getBody(robot.findJointId('front_right_knee')).position_num);
 
   symmetric_matrix = addAntiSymmetricPair(symmetric_matrix,7:8,...
-    robot.getBody(robot.findJointInd('back_left_hip_roll')).dofnum,...
-    robot.getBody(robot.findJointInd('back_right_hip_roll')).dofnum);
+    robot.getBody(robot.findJointId('back_left_hip_roll')).position_num,...
+    robot.getBody(robot.findJointId('back_right_hip_roll')).position_num);
 
   symmetric_matrix = addSymmetricPair(symmetric_matrix,9:10,...
-    robot.getBody(robot.findJointInd('back_left_hip_pitch')).dofnum,...
-    robot.getBody(robot.findJointInd('back_right_hip_pitch')).dofnum);
+    robot.getBody(robot.findJointId('back_left_hip_pitch')).position_num,...
+    robot.getBody(robot.findJointId('back_right_hip_pitch')).position_num);
 
   symmetric_matrix = addSymmetricPair(symmetric_matrix,11:12,...
-    robot.getBody(robot.findJointInd('back_left_knee')).dofnum,...
-    robot.getBody(robot.findJointInd('back_right_knee')).dofnum);
+    robot.getBody(robot.findJointId('back_left_knee')).position_num,...
+    robot.getBody(robot.findJointId('back_right_knee')).position_num);
   
-  base_y = findJointIndices(robot,'base_y'); base_y = base_y(1);
+  base_y = findPositionIndices(robot,'base_y'); base_y = base_y(1);
   equal_matrix = addOpposite(equal_matrix,1,base_y);
 
-  base_z = findJointIndices(robot,'base_z');
+  base_z = findPositionIndices(robot,'base_z');
   equal_matrix = addEquality(equal_matrix,2,base_z);
 
-  base_roll = findJointIndices(robot,'base_roll');
+  base_roll = findPositionIndices(robot,'base_roll');
   equal_matrix = addOpposite(equal_matrix,3,base_roll);
 
-  base_pitch = findJointIndices(robot,'base_pitch');
+  base_pitch = findPositionIndices(robot,'base_pitch');
   equal_matrix = addEquality(equal_matrix,4,base_pitch);
 
-  base_yaw = findJointIndices(robot,'base_yaw');
+  base_yaw = findPositionIndices(robot,'base_yaw');
   equal_matrix = addOpposite(equal_matrix,5,base_yaw);
 
   lb = zeros(2*num_symmetry+num_equal,1);
@@ -335,27 +335,27 @@ end
 function q_mirror = mirrorPositions(robot,q)
   q_mirror = q;
 
-  function n = dofnum(joint_name)
-    n = robot.getBody(robot.findJointInd(joint_name)).dofnum;
+  function n = position_num(joint_name)
+    n = robot.getBody(robot.findJointId(joint_name)).position_num;
   end
   
   % y,roll,yaw
   q_mirror([2,4,6],:) = -q([2,4,6],:);
   
-  q_mirror(dofnum('front_left_hip_roll'),:) = -q(dofnum('front_right_hip_roll'),:);
-  q_mirror(dofnum('front_right_hip_roll'),:) = -q(dofnum('front_left_hip_roll'),:);
-  q_mirror(dofnum('back_left_hip_roll'),:) = -q(dofnum('back_right_hip_roll'),:);
-  q_mirror(dofnum('back_right_hip_roll'),:) = -q(dofnum('back_left_hip_roll'),:);
+  q_mirror(position_num('front_left_hip_roll'),:) = -q(position_num('front_right_hip_roll'),:);
+  q_mirror(position_num('front_right_hip_roll'),:) = -q(position_num('front_left_hip_roll'),:);
+  q_mirror(position_num('back_left_hip_roll'),:) = -q(position_num('back_right_hip_roll'),:);
+  q_mirror(position_num('back_right_hip_roll'),:) = -q(position_num('back_left_hip_roll'),:);
   
-  q_mirror(dofnum('front_left_hip_pitch'),:) = q(dofnum('front_right_hip_pitch'),:);
-  q_mirror(dofnum('front_right_hip_pitch'),:) = q(dofnum('front_left_hip_pitch'),:);
-  q_mirror(dofnum('back_left_hip_pitch'),:) = q(dofnum('back_right_hip_pitch'),:);
-  q_mirror(dofnum('back_right_hip_pitch'),:) = q(dofnum('back_left_hip_pitch'),:);
+  q_mirror(position_num('front_left_hip_pitch'),:) = q(position_num('front_right_hip_pitch'),:);
+  q_mirror(position_num('front_right_hip_pitch'),:) = q(position_num('front_left_hip_pitch'),:);
+  q_mirror(position_num('back_left_hip_pitch'),:) = q(position_num('back_right_hip_pitch'),:);
+  q_mirror(position_num('back_right_hip_pitch'),:) = q(position_num('back_left_hip_pitch'),:);
   
-  q_mirror(dofnum('front_left_knee'),:) = q(dofnum('front_right_knee'),:);
-  q_mirror(dofnum('front_right_knee'),:) = q(dofnum('front_left_knee'),:);
-  q_mirror(dofnum('back_left_knee'),:) = q(dofnum('back_right_knee'),:);
-  q_mirror(dofnum('back_right_knee'),:) = q(dofnum('back_left_knee'),:);
+  q_mirror(position_num('front_left_knee'),:) = q(position_num('front_right_knee'),:);
+  q_mirror(position_num('front_right_knee'),:) = q(position_num('front_left_knee'),:);
+  q_mirror(position_num('back_left_knee'),:) = q(position_num('back_right_knee'),:);
+  q_mirror(position_num('back_right_knee'),:) = q(position_num('back_left_knee'),:);
 end
 
 function displayCallback(N,x)
@@ -378,16 +378,6 @@ function options = parseOptionsStruct(options_in)
   end
 end
 
-
-% todo: get rid of this (in favor of findJointInd then dofnum)
-function [ indices ] = findJointIndices( rbm, str )
-%findJointIndices Returns indices in the state vector for joints whose
-  %name contains a specified string.
-  % @param str String to be searched for
-  % @retvall indices Array of indices into state vector
-  nq = rbm.getNumDOF();
-  indices = find(~cellfun('isempty',strfind(rbm.getStateFrame().coordinates(1:nq),str)));
-end
 
 function xtraj = halfStrideToFullStride(robot,mirror_fun,xtraj_half)
   % @param mirror_fun   -- function handle that takes an nq x N array of joint
