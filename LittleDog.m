@@ -31,7 +31,9 @@ classdef LittleDog < RigidBodyManipulator %& LeggedRobot
       x0.back_left_hip_roll = hip_roll;
       x0.back_left_hip_pitch = -hip_pitch;
       x0.back_left_knee = knee;
-      x0 = resolveConstraints(obj,x0);
+%      x0 = resolveConstraints(obj,x0);  % andres says calling this results
+%      in snopt be slow thereafter.  In fact, it only solves for one var:
+      x0.base_z = 0.0146;
     end
     
     function xstar = defaultFixedPoint(obj)

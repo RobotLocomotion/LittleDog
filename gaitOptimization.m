@@ -26,10 +26,10 @@ function [sol,v,prog,xtraj] = gaitOptimization(gait,seed)
     % http://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Gait_graphs.jpg/500px-Gait_graphs.jpg
     case 'running_trot'
       N = 21;
-      foot(2).in_stance = 6:16;
-      foot(3).in_stance = 6:16;
-      if ~isfield(options,'speed'), options.speed = .9; end
-      if ~isfield(options,'stride_length'), options.stride_length = .55; end
+      foot(2).in_stance = 4:18;
+      foot(3).in_stance = 4:18;
+      if ~isfield(options,'speed'), options.speed = .6; end
+      if ~isfield(options,'stride_length'), options.stride_length = .3; end
       is_laterally_symmetric = true;
     case 'walking_trot'
       N = 21;
@@ -85,7 +85,7 @@ function [sol,v,prog,xtraj] = gaitOptimization(gait,seed)
     qf(1) = qf(1)/2;
     T = T/2;
   end
-  tf_range = T*[1,1];
+  tf_range = T*[.8,1.2];
   
   % Set up cost variables
   q_nom = bsxfun(@times,qstar,ones(1,N));
@@ -145,7 +145,7 @@ function [sol,v,prog,xtraj] = gaitOptimization(gait,seed)
   end
   
   % com height constraint
-  lb = .1; ub = nan; %.15;
+  lb = .12; ub = nan; %.15;
   prog = prog.addConstraint(BoundingBoxConstraint(lb*ones(N,1),ub*ones(N,1)),prog.com_inds(3,1:N));
 
   % comdot in x always positive 
@@ -265,7 +265,7 @@ function half_periodic_constraint = halfPeriodicConstraint(robot)
   num_equal = 5;
   nq = robot.getNumPositions();
   
-  symmetric_matrix = zeros(2*num_symmetry,2*nq);
+  symmetric_matrix = zeros(num_symmetry,2*nq);
   equal_matrix = zeros(num_equal,2*nq);
   initial_indices = 1:nq;
   final_indices   = nq+(1:nq);
@@ -327,7 +327,7 @@ function half_periodic_constraint = halfPeriodicConstraint(robot)
   base_yaw = findPositionIndices(robot,'base_yaw');
   equal_matrix = addOpposite(equal_matrix,5,base_yaw);
 
-  lb = zeros(2*num_symmetry+num_equal,1);
+  lb = zeros(num_symmetry+num_equal,1);
   ub = lb;
   half_periodic_constraint = LinearConstraint(lb,ub,[symmetric_matrix;equal_matrix]);
 end
