@@ -1,4 +1,4 @@
-<robot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<robot name="LittleDog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://drake.mit.edu drake-distro/drake/doc/drakeURDF.xsd"
  xmlns="http://drake.mit.edu">
   
@@ -25,14 +25,15 @@
       <mass value="0.062300" />
       <inertia ixx="0.000004" ixy="0" ixz="0" iyy="0.000015" iyz="0" izz="0.000015" />
     </inertial>
+<!--
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
-<!--      <geometry>
+      <geometry>
         <mesh filename="meshes/front_left_hip.obj" scale=".0254 .0254 .0254"/>
       </geometry>
--->
       <material name="black" />
     </visual>
+-->
   </link>
 
   <joint name="front_left_hip_roll" type="revolute">
@@ -124,14 +125,16 @@
       <mass value="0.062300" />
       <inertia ixx="0.000004" ixy="0" ixz="0" iyy="0.000015" iyz="0" izz="0.000015" />
     </inertial>
+<!--
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
-<!--      <geometry>
+      <geometry>
         <mesh filename="meshes/front_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
-      </geometry> -->
+      </geometry>
       <material name="black" />
     </visual>
-  </link>
+ -->
+   </link>
 
   <joint name="front_right_hip_roll" type="revolute">
     <parent link="body" />
@@ -222,13 +225,14 @@
       <mass value="0.062300" />
       <inertia ixx="0.000004" ixy="0" ixz="0" iyy="0.000015" iyz="0" izz="0.000015" />
     </inertial>
-    <visual>
+<!--    <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
-<!--      <geometry>
+      <geometry>
         <mesh filename="meshes/back_left_hip.obj" scale="0.0254 0.0254 0.0254"/>
-      </geometry>      -->
+      </geometry>
       <material name="black" />
     </visual>
+-->
   </link>
 
   <joint name="back_left_hip_roll" type="revolute">
@@ -320,13 +324,14 @@
       <mass value="0.062300" />
       <inertia ixx="0.000004" ixy="0" ixz="0" iyy="0.000015" iyz="0" izz="0.000015" />
     </inertial>
-    <visual>
+<!--    <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
-<!--      <geometry>
+      <geometry>
         <mesh filename="meshes/back_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
-      </geometry>-->
+      </geometry>
       <material name="black" />
     </visual>
+-->
   </link>
 
   <joint name="back_right_hip_roll" type="revolute">
